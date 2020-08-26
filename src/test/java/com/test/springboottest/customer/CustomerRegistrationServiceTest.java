@@ -106,4 +106,29 @@ class CustomerRegistrationServiceTest {
         // Finally
         then(customerRepository).should(never()).save(any(Customer.class)); // Can be empty: any()
     }
+
+    @Test
+    void itShouldSaveNewCustomerWhenIdIsNull() {
+        // Given a phone number and a customer
+        String phoneNumber = "000099";
+        Customer customer = new Customer(null, "Murillo", phoneNumber);
+
+        // ... a request
+        CustomerRegistrationRequest request = new CustomerRegistrationRequest(customer);
+
+        // ... No customer with phone number passed
+        given(customerRepository.selectCustomerByPhoneNumber(phoneNumber))
+                .willReturn(Optional.empty());
+
+        // When
+        underTest.registerNewCustomer(request);
+
+        // Then
+        then(customerRepository).should().save(customerArgumentCaptor.capture());
+        Customer customerArgumentCaptorValue = customerArgumentCaptor.getValue();
+
+        //compare the sentumer and the retrieved custumer before saving, but ignore the "id" field as NULL was sent and a new ID was generated in the method.
+        assertThat(customerArgumentCaptorValue).isEqualToIgnoringGivenFields(customer, "id");
+        assertThat(customerArgumentCaptorValue.getId()).isNotNull();//It cannot be NULL, as an ID was generated in the method
+    }
 }
