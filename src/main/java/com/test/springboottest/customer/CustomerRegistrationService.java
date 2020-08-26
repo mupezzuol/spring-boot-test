@@ -3,6 +3,8 @@ package com.test.springboottest.customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class CustomerRegistrationService {
 
@@ -13,8 +15,29 @@ public class CustomerRegistrationService {
         this.customerRepository = customerRepository;
     }
 
-    public void registerNewCustomer(CustomerRegistrationRequest request){
+    public void registerNewCustomer(CustomerRegistrationRequest request) {
+        String phoneNumber = request.getCustomer().getPhoneNumber();
 
+        Optional<Customer> customerOptional = customerRepository
+                .selectCustomerByPhoneNumber(phoneNumber);
+
+        if (customerOptional.isPresent()) {
+            Customer customer = customerOptional.get();
+            if (customer.getName().equals(request.getCustomer().getName())) {
+                return;
+            }
+            throw new IllegalStateException(String.format("phone number [%s] is taken", phoneNumber));
+        }
+
+        customerRepository.save(request.getCustomer());
+
+        // It could be that way, but it is more complex for another developer to understand
+//        customerRepository.selectCustomerByPhoneNumber(phoneNumber)
+//                .ifPresentOrElse(c -> {
+//                    if (!(request.getCustomer().getName().equals(c.getName()))) {
+//                        throw new IllegalStateException(String.format("phone number [%s] is taken", phoneNumber));
+//                    }
+//                }, () -> customerRepository.save(request.getCustomer()));
     }
 
 }

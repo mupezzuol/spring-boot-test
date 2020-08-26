@@ -13,13 +13,13 @@ import java.util.UUID;
 class CustomerRepositoryTest {
 
     @Autowired
-    private CustomerRepository customerRepository;
+    private CustomerRepository underTest;
 
     @Test
     void itShouldSelectCustomerByPhoneNumber() {
         // Given
         // When
-        // then
+        // Then
     }
 
     @Test
@@ -29,10 +29,10 @@ class CustomerRepositoryTest {
         Customer customer = new Customer(id, "Murillo", "0000");
 
         // When
-        customerRepository.save(customer);
+        underTest.save(customer);
 
-        // then
-        Optional<Customer> optionalCustomer = customerRepository.findById(id);
+        // Then
+        Optional<Customer> optionalCustomer = underTest.findById(id);
         assertThat(optionalCustomer)
                 .isPresent()
                 .hasValueSatisfying(c -> {
