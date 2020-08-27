@@ -10,7 +10,7 @@ import java.util.UUID;
 @Service
 public class PaymentService {
 
-    private static final List<Currency> ACCEPTED_CURRENCIES = List.of(Currency.USD, Currency.GBP, Currency.BRL);
+    private static final List<Currency> ACCEPTED_CURRENCIES = List.of(Currency.GBP, Currency.BRL);
 
     private final CustomerRepository customerRepository;
     private final PaymentRepository paymentRepository;
@@ -35,7 +35,7 @@ public class PaymentService {
         // 2. Do we support the currency if not throw
         boolean isCurrencySupported = ACCEPTED_CURRENCIES.contains(paymentRequest.getPayment().getCurrency());
         if (!isCurrencySupported){
-            String message = String.format("Currency[%s] not supported",
+            String message = String.format("Currency [%s] not supported",
                     paymentRequest.getPayment().getCurrency());
             throw new IllegalStateException(message);
         }
