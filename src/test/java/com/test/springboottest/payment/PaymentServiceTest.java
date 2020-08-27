@@ -71,6 +71,7 @@ class PaymentServiceTest {
         underTest.chargeCard(customerId, paymentRequest);
 
         // Then
+        // This is another way of using Captor, other than as an attribute of the class.
         ArgumentCaptor<Payment> paymentArgumentCaptor = ArgumentCaptor.forClass(Payment.class);
 
         // Get this value when to execute save
