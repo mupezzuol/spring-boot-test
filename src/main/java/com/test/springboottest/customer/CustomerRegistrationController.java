@@ -13,7 +13,7 @@ public class CustomerRegistrationController {
 
     @PutMapping
     public void registerNewCustomer(@RequestBody @Valid CustomerRegistrationRequest request){
-
+        System.out.println(request);
     }
 
 }
