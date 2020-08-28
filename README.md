@@ -91,3 +91,63 @@ void itShouldSaveNewCustomer() {
     assertThat(customerArgumentCaptorValue).isEqualTo(customer); // compare Customer with Customer passed in request (are the same object)
 }
 ```
+
+- Testing the _PaymentIntegrationTest_ class using `@SpringBootTest` and `@AutoConfigureMockMvc` to perform integration testing, making HTTP calls to Controllers.
+
+```java
+//it starts the application instead of testing separately
+//To test endpoints, it is necessary to use this annotation, as it will go up the spring service to perform this test.
+@SpringBootTest
+@AutoConfigureMockMvc //Without this "auto configuration" it will not work
+class PaymentIntegrationTest {
+
+    @Autowired
+    private PaymentRepository paymentRepository;
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Test
+    void itShouldCreatePaymentSuccessfully() throws Exception {
+        // Given a customer
+        UUID customerId = UUID.randomUUID();
+        Customer customer = new Customer(customerId, "Murillo", "+447000000000");
+
+        CustomerRegistrationRequest customerRegistrationRequest = new CustomerRegistrationRequest(customer);
+
+        // Customer Register
+        ResultActions customerRegResultActions = mockMvc.perform(put("/api/v1/customer-registration")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(Objects.requireNonNull(objectToJson(customerRegistrationRequest))));
+
+        // ... Payment
+        long paymentId = 1L;
+        Payment payment = new Payment(
+                paymentId,
+                customerId,
+                new BigDecimal("10.00"),
+                Currency.BRL,
+                "x0x0x0x0",
+                "Zakat"
+        );
+
+        // ... Payment request
+        PaymentRequest paymentRequest = new PaymentRequest(payment);
+
+        // ... When payment is sent
+        ResultActions paymentResultActions = mockMvc.perform(post("/api/v1/payment")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(Objects.requireNonNull(objectToJson(paymentRequest))));
+
+        // Then both customer registration and payment requests are 200 status code
+        customerRegResultActions.andExpect(status().isOk());
+        paymentResultActions.andExpect(status().isOk());
+
+        // Payment is stored in db
+        // TODO: Do not use paymentRepository instead create an endpoint to retrieve payments for customers
+        assertThat(paymentRepository.findById(paymentId))
+                .isPresent()
+                .hasValueSatisfying(p -> assertThat(p).isEqualToComparingFieldByField(payment));
+    }
+}
+```
