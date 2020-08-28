@@ -9,7 +9,7 @@
 - [About](#about) 
 - [Architecture Diagram](#architecture)
 - [Coverage Examples](#coverage)
-- [Tests](#tests)
+- [Show me the code](#code)
 
 ## About <a name="about"></a> :bulb:
 
@@ -35,6 +35,27 @@ In this repository you will see everything about some types of tests implemented
 #### IntelliJ IDEA
 ![sonarqube](src/main/resources/prints/green-test-coverage-line.png)
 
-## Tests <a name="tests"></a> :computer:
+## Show me the code <a name="code"></a> :computer:
 
-- in progress...
+- Some tests in the repository.
+
+```java
+@Test
+void itShouldSelectCustomerByPhoneNumberExists() {
+    // Given
+    UUID id = UUID.randomUUID();
+    String phoneNumber = "0000";
+    Customer customer = new Customer(id, "Murillo", phoneNumber);
+
+    // When
+    underTest.save(customer);
+    Optional<Customer> optionalCustomer = underTest.selectCustomerByPhoneNumber(phoneNumber);
+
+    // Then
+    assertThat(optionalCustomer)
+            .isPresent()
+            .hasValueSatisfying(c -> {
+                assertThat(c).isEqualToComparingFieldByField(customer);
+            });
+}
+```
