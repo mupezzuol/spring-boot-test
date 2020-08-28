@@ -1,5 +1,6 @@
 package com.test.springboottest.customer;
 
+import com.test.springboottest.utils.PhoneNumberValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -22,6 +23,9 @@ class CustomerRegistrationServiceTest {
     @Mock
     private CustomerRepository customerRepository;
 
+    @Mock
+    private PhoneNumberValidator phoneNumberValidator;
+
     @Captor
     private ArgumentCaptor<Customer> customerArgumentCaptor;
 
@@ -30,7 +34,7 @@ class CustomerRegistrationServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        underTest = new CustomerRegistrationService(customerRepository);
+        underTest = new CustomerRegistrationService(customerRepository, phoneNumberValidator);
     }
 
     @Test
@@ -48,6 +52,9 @@ class CustomerRegistrationServiceTest {
         // otherwise it will not go to DB, so we are mocking the data
         given(customerRepository.selectCustomerByPhoneNumber(phoneNumber))
                 .willReturn(Optional.empty());
+
+        // ... Valid phone number
+        given(phoneNumberValidator.test(phoneNumber)).willReturn(Boolean.TRUE);
 
         // When
         underTest.registerNewCustomer(request);
@@ -70,6 +77,9 @@ class CustomerRegistrationServiceTest {
         // ... an existing customer is retuned (same customer)
         given(customerRepository.selectCustomerByPhoneNumber(phoneNumber))
                 .willReturn(Optional.of(customer));
+
+        // ... Valid phone number
+        given(phoneNumberValidator.test(phoneNumber)).willReturn(Boolean.TRUE);
 
         // When
         underTest.registerNewCustomer(request);
@@ -96,6 +106,9 @@ class CustomerRegistrationServiceTest {
         given(customerRepository.selectCustomerByPhoneNumber(phoneNumber))
                 .willReturn(Optional.of(customerTwo));
 
+        // ... Valid phone number
+        given(phoneNumberValidator.test(phoneNumber)).willReturn(Boolean.TRUE);
+
         // When + Then = Together this case
         // In that case it will fall into Exception where there is already a Customer with that same phone.
         // I did return 'customerTwo' and send in request 'customer', both are the same phoneNumber
@@ -120,6 +133,9 @@ class CustomerRegistrationServiceTest {
         given(customerRepository.selectCustomerByPhoneNumber(phoneNumber))
                 .willReturn(Optional.empty());
 
+        // ... Valid phone number
+        given(phoneNumberValidator.test(phoneNumber)).willReturn(Boolean.TRUE);
+
         // When
         underTest.registerNewCustomer(request);
 
@@ -130,5 +146,26 @@ class CustomerRegistrationServiceTest {
         //compare the sentumer and the retrieved custumer before saving, but ignore the "id" field as NULL was sent and a new ID was generated in the method.
         assertThat(customerArgumentCaptorValue).isEqualToIgnoringGivenFields(customer, "id");
         assertThat(customerArgumentCaptorValue.getId()).isNotNull();//It cannot be NULL, as an ID was generated in the method
+    }
+
+    @Test
+    void itShouldSaveNewCustomerWhenPhoneNumberIsInvalid() {
+        // Given a phone number and a customer
+        String phoneNumber = "000099";
+        Customer customer = new Customer(UUID.randomUUID(), "Murillo", phoneNumber);
+
+        // ... a request
+        CustomerRegistrationRequest request = new CustomerRegistrationRequest(customer);
+
+        // ... Valid phone number
+        given(phoneNumberValidator.test(phoneNumber)).willReturn(Boolean.FALSE);
+
+        // When
+        assertThatThrownBy(() -> underTest.registerNewCustomer(request))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining(String.format("phone number [%s] is not valid", phoneNumber));
+
+        // Then
+        then(customerRepository).shouldHaveNoMoreInteractions();
     }
 }

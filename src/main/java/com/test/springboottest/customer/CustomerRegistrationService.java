@@ -1,5 +1,6 @@
 package com.test.springboottest.customer;
 
+import com.test.springboottest.utils.PhoneNumberValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,16 +11,20 @@ import java.util.UUID;
 public class CustomerRegistrationService {
 
     private final CustomerRepository customerRepository;
+    private final PhoneNumberValidator phoneNumberValidator;
 
     @Autowired
-    public CustomerRegistrationService(CustomerRepository customerRepository) {
+    public CustomerRegistrationService(CustomerRepository customerRepository, PhoneNumberValidator phoneNumberValidator) {
         this.customerRepository = customerRepository;
+        this.phoneNumberValidator = phoneNumberValidator;
     }
 
     public void registerNewCustomer(CustomerRegistrationRequest request) {
         String phoneNumber = request.getCustomer().getPhoneNumber();
 
-        // TODO: validate that phone is valid
+        if (!phoneNumberValidator.test(phoneNumber)){
+            throw new IllegalStateException(String.format("phone number [%s] is not valid", phoneNumber));
+        }
 
         Optional<Customer> customerOptional = customerRepository
                 .selectCustomerByPhoneNumber(phoneNumber);
