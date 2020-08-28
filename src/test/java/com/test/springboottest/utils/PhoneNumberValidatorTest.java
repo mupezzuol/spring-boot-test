@@ -28,7 +28,7 @@ class PhoneNumberValidatorTest {
     })
     void itShouldValidatePhoneNumber(String phoneNumber, boolean expected) {
         // When
-        boolean isValid = underTest.test(phoneNumber);
+        boolean isValid = underTest.validate(phoneNumber);
 
         // Then
         assertThat(isValid).isEqualTo(expected);
@@ -41,7 +41,7 @@ class PhoneNumberValidatorTest {
         String phoneNumber = "+447000000000";
 
         // When
-        boolean isValid = underTest.test(phoneNumber);
+        boolean isValid = underTest.validate(phoneNumber);
 
         // Then
         assertThat(isValid).isTrue();
@@ -54,7 +54,7 @@ class PhoneNumberValidatorTest {
         String phoneNumber = "+4470000000003";
 
         // When
-        boolean isValid = underTest.test(phoneNumber);
+        boolean isValid = underTest.validate(phoneNumber);
 
         // Then
         assertThat(isValid).isFalse();
@@ -67,7 +67,7 @@ class PhoneNumberValidatorTest {
         String phoneNumber = "447000000000";
 
         // When
-        boolean isValid = underTest.test(phoneNumber);
+        boolean isValid = underTest.validate(phoneNumber);
 
         // Then
         assertThat(isValid).isFalse();
@@ -78,7 +78,7 @@ class PhoneNumberValidatorTest {
     void itShouldValidatePhoneNumberWhenIsNull() {
         // Given
         // When
-        boolean isValid = underTest.test(null);
+        boolean isValid = underTest.validate(null);
 
         // Then
         assertThat(isValid).isFalse();

@@ -22,7 +22,7 @@ public class CustomerRegistrationService {
     public void registerNewCustomer(CustomerRegistrationRequest request) {
         String phoneNumber = request.getCustomer().getPhoneNumber();
 
-        if (!phoneNumberValidator.test(phoneNumber)){
+        if (!phoneNumberValidator.validate(phoneNumber)){
             throw new IllegalStateException(String.format("phone number [%s] is not valid", phoneNumber));
         }
 

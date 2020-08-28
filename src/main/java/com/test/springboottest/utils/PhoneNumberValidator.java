@@ -2,13 +2,10 @@ package com.test.springboottest.utils;
 
 import org.springframework.stereotype.Component;
 
-import java.util.function.Predicate;
-
 @Component
-public class PhoneNumberValidator implements Predicate<String> {
+public class PhoneNumberValidator {
 
-    @Override
-    public boolean test(String phoneNumber) {
+    public boolean validate(String phoneNumber) {
         if (phoneNumber != null){
             return phoneNumber.startsWith("+44") && phoneNumber.length() == 13;
         }

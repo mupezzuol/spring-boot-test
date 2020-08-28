@@ -54,7 +54,7 @@ class CustomerRegistrationServiceTest {
                 .willReturn(Optional.empty());
 
         // ... Valid phone number
-        given(phoneNumberValidator.test(phoneNumber)).willReturn(Boolean.TRUE);
+        given(phoneNumberValidator.validate(phoneNumber)).willReturn(Boolean.TRUE);
 
         // When
         underTest.registerNewCustomer(request);
@@ -79,7 +79,7 @@ class CustomerRegistrationServiceTest {
                 .willReturn(Optional.of(customer));
 
         // ... Valid phone number
-        given(phoneNumberValidator.test(phoneNumber)).willReturn(Boolean.TRUE);
+        given(phoneNumberValidator.validate(phoneNumber)).willReturn(Boolean.TRUE);
 
         // When
         underTest.registerNewCustomer(request);
@@ -107,7 +107,7 @@ class CustomerRegistrationServiceTest {
                 .willReturn(Optional.of(customerTwo));
 
         // ... Valid phone number
-        given(phoneNumberValidator.test(phoneNumber)).willReturn(Boolean.TRUE);
+        given(phoneNumberValidator.validate(phoneNumber)).willReturn(Boolean.TRUE);
 
         // When + Then = Together this case
         // In that case it will fall into Exception where there is already a Customer with that same phone.
@@ -134,7 +134,7 @@ class CustomerRegistrationServiceTest {
                 .willReturn(Optional.empty());
 
         // ... Valid phone number
-        given(phoneNumberValidator.test(phoneNumber)).willReturn(Boolean.TRUE);
+        given(phoneNumberValidator.validate(phoneNumber)).willReturn(Boolean.TRUE);
 
         // When
         underTest.registerNewCustomer(request);
@@ -158,7 +158,7 @@ class CustomerRegistrationServiceTest {
         CustomerRegistrationRequest request = new CustomerRegistrationRequest(customer);
 
         // ... Valid phone number
-        given(phoneNumberValidator.test(phoneNumber)).willReturn(Boolean.FALSE);
+        given(phoneNumberValidator.validate(phoneNumber)).willReturn(Boolean.FALSE);
 
         // When
         assertThatThrownBy(() -> underTest.registerNewCustomer(request))
