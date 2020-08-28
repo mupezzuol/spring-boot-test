@@ -37,7 +37,7 @@ In this repository you will see everything about some types of tests implemented
 
 ## Show me the code <a name="code"></a> :computer:
 
-- Some tests in the repository.
+- Testing the _CustomerRepository_ class using the settings with `@DataJpaTest`.
 
 ```java
 @Test
@@ -57,5 +57,37 @@ void itShouldSelectCustomerByPhoneNumberExists() {
             .hasValueSatisfying(c -> {
                 assertThat(c).isEqualToComparingFieldByField(customer);
             });
+}
+```
+
+- Testing the _CustomerRegistrationService_ class using `@Mock` and `@Captor`.
+
+```java
+@Test
+void itShouldSaveNewCustomer() {
+    // Given a phone number and a customer
+    String phoneNumber = "000099";
+    Customer customer = new Customer(UUID.randomUUID(), "Murillo", phoneNumber);
+
+    // ... a request
+    CustomerRegistrationRequest request = new CustomerRegistrationRequest(customer);
+
+    // ... No customer with phone number passed
+    // -> when this code is called in the service, we force the return of this method to be "empty",
+    // so that it falls into the condition of saving the object and does not fall into the logic of the IF
+    // otherwise it will not go to DB, so we are mocking the data
+    given(customerRepository.selectCustomerByPhoneNumber(phoneNumber))
+            .willReturn(Optional.empty());
+
+    // ... Valid phone number
+    given(phoneNumberValidator.validate(phoneNumber)).willReturn(Boolean.TRUE);
+
+    // When
+    underTest.registerNewCustomer(request);
+
+    // Then
+    then(customerRepository).should().save(customerArgumentCaptor.capture()); // capture the same value passed in call method 'request'
+    Customer customerArgumentCaptorValue = customerArgumentCaptor.getValue(); // get Customer used in request (custumer)
+    assertThat(customerArgumentCaptorValue).isEqualTo(customer); // compare Customer with Customer passed in request (are the same object)
 }
 ```
