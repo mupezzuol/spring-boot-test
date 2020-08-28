@@ -19,4 +19,5 @@ public class MockStripeService implements CardPaymentCharger  {
     public CardPaymentCharge chargeCard(String cardSource, BigDecimal amount, Currency currency, String description) {
         return new CardPaymentCharge(Boolean.TRUE);
     }
+
 }

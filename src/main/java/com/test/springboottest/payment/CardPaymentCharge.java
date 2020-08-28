@@ -18,4 +18,5 @@ public class CardPaymentCharge {
                 "isCardDebited=" + isCardDebited +
                 '}';
     }
+
 }

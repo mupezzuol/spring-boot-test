@@ -42,14 +42,6 @@ public class CustomerRegistrationService {
         }
 
         customerRepository.save(request.getCustomer());
-
-        // It could be that way, but it is more complex for another developer to understand
-//        customerRepository.selectCustomerByPhoneNumber(phoneNumber)
-//                .ifPresentOrElse(c -> {
-//                    if (!(request.getCustomer().getName().equals(c.getName()))) {
-//                        throw new IllegalStateException(String.format("phone number [%s] is taken", phoneNumber));
-//                    }
-//                }, () -> customerRepository.save(request.getCustomer()));
     }
 
 }

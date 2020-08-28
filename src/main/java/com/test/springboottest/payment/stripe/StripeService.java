@@ -47,4 +47,5 @@ public class StripeService implements CardPaymentCharger {
             throw new IllegalStateException("Cannot make strip chage", e);
         }
     }
+
 }

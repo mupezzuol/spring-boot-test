@@ -20,4 +20,5 @@ public class CustomerRegistrationRequest {
                 "customer=" + customer +
                 '}';
     }
+
 }

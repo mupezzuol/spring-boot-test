@@ -26,7 +26,7 @@ import java.util.UUID;
 //To test endpoints, it is necessary to use this annotation, as it will go up the spring service to perform this test.
 @SpringBootTest
 @AutoConfigureMockMvc //Without this "auto configuration" it will not work
-public class PaymentIntegrationTest {
+class PaymentIntegrationTest {
 
     @Autowired
     private PaymentRepository paymentRepository;

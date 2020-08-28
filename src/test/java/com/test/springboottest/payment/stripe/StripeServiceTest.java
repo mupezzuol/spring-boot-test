@@ -66,10 +66,10 @@ class StripeServiceTest {
 
         // Assert
         assertThat(mapArgumentCaptorValue.keySet()).hasSize(4);
-        assertThat(mapArgumentCaptorValue.get("amount")).isEqualTo(amount);
-        assertThat(mapArgumentCaptorValue.get("currency")).isEqualTo(currency);
-        assertThat(mapArgumentCaptorValue.get("source")).isEqualTo(cardSource);
-        assertThat(mapArgumentCaptorValue.get("description")).isEqualTo(description);
+        assertThat(mapArgumentCaptorValue).containsEntry("amount", amount);
+        assertThat(mapArgumentCaptorValue).containsEntry("currency", currency);
+        assertThat(mapArgumentCaptorValue).containsEntry("source", cardSource);
+        assertThat(mapArgumentCaptorValue).containsEntry("description", description);
 
         assertThat(optionsArgumentCaptorValue).isNotNull();
         assertThat(cardPaymentCharge.isCardDebited()).isTrue();

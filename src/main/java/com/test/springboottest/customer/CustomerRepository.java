@@ -12,4 +12,5 @@ public interface CustomerRepository extends CrudRepository<Customer, UUID> {
 
     @Query("SELECT c FROM CustomerEntity c WHERE c.phoneNumber = ?1")
     Optional<Customer> selectCustomerByPhoneNumber(String phoneNumber);
+
 }
