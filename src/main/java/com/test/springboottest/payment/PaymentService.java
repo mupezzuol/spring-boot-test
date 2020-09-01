@@ -60,4 +60,7 @@ public class PaymentService {
         // 6. TODO: send sms
     }
 
+    public Payment findById(Long id) {
+        return paymentRepository.findById(id).orElseThrow(IllegalStateException::new);
+    }
 }

@@ -12,10 +12,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
@@ -27,9 +27,6 @@ import java.util.UUID;
 @SpringBootTest
 @AutoConfigureMockMvc //Without this "auto configuration" it will not work
 class PaymentIntegrationTest {
-
-    @Autowired
-    private PaymentRepository paymentRepository;
 
     @Autowired
     private MockMvc mockMvc;
@@ -71,10 +68,8 @@ class PaymentIntegrationTest {
         paymentResultActions.andExpect(status().isOk());
 
         // Payment is stored in db
-        // TODO: Do not use paymentRepository instead create an endpoint to retrieve payments for customers
-        assertThat(paymentRepository.findById(paymentId))
-                .isPresent()
-                .hasValueSatisfying(p -> assertThat(p).isEqualToComparingFieldByField(payment));
+        ResultActions paymentByIdResultActions = mockMvc.perform(get("/api/v1/payment/"+String.valueOf(paymentId)));
+        paymentByIdResultActions.andExpect(status().isOk());
 
         // TODO: Ensure sms is delivered
     }

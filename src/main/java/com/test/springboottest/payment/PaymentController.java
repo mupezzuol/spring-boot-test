@@ -19,4 +19,9 @@ public class PaymentController {
         paymentService.chargeCard(paymentRequest.getPayment().getCustomerId(), paymentRequest);
     }
 
+    @GetMapping("/{id}")
+    public Payment findById(@PathVariable Long id) {
+        return paymentService.findById(id);
+    }
+
 }
